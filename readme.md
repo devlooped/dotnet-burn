@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/github/license/devlooped/chromium.svg?color=blue)](https://github.com/devlooped/dotnet-burn/blob/main/license.txt) 
 [![Build](https://github.com/devlooped/dotnet-burn/workflows/build/badge.svg?branch=main)](https://github.com/devlooped/dotnet-burn/actions)
 
-Subtitles burner for .NET 6 powered by HandBrake
+Subtitles styler and burner powered by HandBrake and .NET
 
 ```
 dotnet tool install -g dotnet-burn
@@ -35,6 +35,11 @@ Options:
   -u, --underline            Underline font
 ```
 
+Example: burn subtitles file using Helvetica 75pt yellow bold font:
+
+```
+burn -f "Helvetica" -s 75 -c #FFD300 -b input.mp4 input.srt output.mp4
+```
 
 <!-- #sponsors -->
 <!-- include https://github.com/devlooped/sponsors/raw/main/footer.md -->
