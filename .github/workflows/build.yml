@@ -31,8 +31,20 @@ jobs:
       - name: 🤘 checkout
         uses: actions/checkout@v2
 
+      - name: 🤖 defaults
+        uses: devlooped/actions-bot@v1
+        with:
+          name: ${{ secrets.BOT_NAME }}
+          email: ${{ secrets.BOT_EMAIL }}
+          gh_token: ${{ secrets.GH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: ⏬ download
-        run: |         
+        run: |
+          dotnet tool update -g dotnet-gcm
+          dotnet gcm store --protocol=https --host=github.com --username=$env:GITHUB_ACTOR --password=$env:GH_TOKEN
+          gh auth status
+  
           gh release download --output obj/win-x86_64.zip --clobber -p *CLI*-win-x86_64.zip --repo HandBrake/HandBrake
           unzip obj/win-x86_64.zip -d src/handbrake.win/runtime
 
