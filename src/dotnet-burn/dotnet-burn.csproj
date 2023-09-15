@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <PackageId>dotnet-burn</PackageId>
     <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <PackAsTool>true</PackAsTool>
+    <ToolCommandName>burn</ToolCommandName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\handbrake.win\handbrake.win.msbuildproj" />
+    <ProjectReference Include="..\handbrake.win\handbrake.win.msbuildproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
+
+  <Target Name="TrimRuntimes" AfterTargets="InferToolContents">
+    <ItemGroup>
+      <None Remove="@(None)" Condition="$([MSBuild]::ValueOrDefault('%(None.PackagePath)', '').Contains('/runtimes/'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>
