@@ -40,6 +40,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: ⏬ download
+        env:
+          GCM_CREDENTIAL_STORE: cache
         run: |
           dotnet tool update -g dotnet-gcm
           dotnet gcm store --protocol=https --host=github.com --username=$env:GITHUB_ACTOR --password=$env:GH_TOKEN
