@@ -1,0 +1,9 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
+    <PackageVersion Include="NuGetizer" Version="1.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageVersion Include="NuGet.ProjectModel" Version="6.6.0" />
+    <PackageVersion Include="ThisAssembly.Project" Version="1.2.15" />
+  </ItemGroup>
+</Project>
