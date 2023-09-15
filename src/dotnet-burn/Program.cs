@@ -46,7 +46,7 @@ List<string> extra;
 try
 {
     extra = options.Parse(burnArgs);
-    if (extra.Count != 3)
+    if (extra.Count != 3 || help)
         return RenderHelp(options);
 
     var input = extra[0];
@@ -110,8 +110,8 @@ try
 
         File.WriteAllText(subtitles, new SubRip().ToText(subs, Path.GetFileName(input)));
 #if DEBUG
-        if (AnsiConsole.Confirm("Open formatted subtitles file?", false))
-            Process.Start(new ProcessStartInfo("code", subtitles) { UseShellExecute = true });
+        //if (AnsiConsole.Confirm("Open formatted subtitles file?", false))
+        //    Process.Start(new ProcessStartInfo("code", subtitles) { UseShellExecute = true });
 #endif
     }
 
@@ -143,16 +143,11 @@ catch (OptionException e)
     return -1;
 }
 
-if (help)
-{
-}
-
-
 return 0;
 
 int RenderHelp(OptionSet options)
 {
-    AnsiConsole.WriteLine("Usage: burn [OPTIONS]+ input subtitles output -- [handbrake args]");
+    AnsiConsole.WriteLine("Usage: burn [OPTIONS]+ input subtitles output [-- [handbrake args]]");
     AnsiConsole.WriteLine("Burns the subtitles over the input video into output.");
     AnsiConsole.WriteLine();
     AnsiConsole.WriteLine("Options:");

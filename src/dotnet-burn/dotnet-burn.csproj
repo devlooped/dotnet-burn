@@ -18,14 +18,15 @@
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="NuGet.ProjectModel" />
     <PackageReference Include="Spectre.Console" />
-    <PackageReference Include="Spectre.Console.Analyzer">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Spectre.Console.Analyzer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\handbrake.win\handbrake.win.msbuildproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="@(None)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <Target Name="TrimRuntimes" AfterTargets="InferToolContents">
