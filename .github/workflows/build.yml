@@ -19,43 +19,65 @@ env:
   DOTNET_NOLOGO: true
   VersionPrefix: 42.42.${{ github.run_number }}
   VersionLabel: ${{ github.ref }}
-
+  PackOnBuild: true
+  GeneratePackageOnBuild: true
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  
 defaults:
   run:
     shell: bash
 
 jobs:
-  build:
+  os-matrix:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.lookup.outputs.matrix }}
     steps:
       - name: 🤘 checkout
         uses: actions/checkout@v2
-
-      - name: 🤖 defaults
-        uses: devlooped/actions-bot@v1
-        with:
-          name: ${{ secrets.BOT_NAME }}
-          email: ${{ secrets.BOT_EMAIL }}
-          gh_token: ${{ secrets.GH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: ⏬ download
-        env:
-          GCM_CREDENTIAL_STORE: cache
+        
+      - name: 🔎 lookup
+        id: lookup
+        shell: pwsh
         run: |
-          dotnet tool update -g dotnet-gcm
-          dotnet gcm store --protocol=https --host=github.com --username=$env:GITHUB_ACTOR --password=$env:GH_TOKEN
-          gh auth status
-  
-          gh release download --output obj/win-x86_64.zip --clobber -p *CLI*-win-x86_64.zip --repo HandBrake/HandBrake
-          unzip obj/win-x86_64.zip -d src/handbrake.win/runtime
+          $path = './.github/workflows/os-matrix.json'
+          $os = if (test-path $path) { cat $path } else { '["ubuntu-latest"]' }
+          echo "matrix=$os" >> $env:GITHUB_OUTPUT
+
+  build:
+    needs: os-matrix
+    name: build-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: ${{ fromJSON(needs.os-matrix.outputs.matrix) }}
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+        with: 
+          submodules: recursive
+          fetch-depth: 0
 
       - name: 🙏 build
-        run: dotnet build -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+        run: dotnet build -m:1 -bl:build.binlog
 
-      - name: 📦 pack
-        run: dotnet pack -m:1 -p:VersionLabel="$GITHUB_REF.$GITHUB_RUN_NUMBER"
+      - name: ⚙ GNU grep
+        if: matrix.os == 'macOS-latest'
+        run: |
+          brew install grep
+          echo 'export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"' >> .bash_profile
 
+      - name: 🧪 test
+        uses: ./.github/workflows/test
+
+      - name: 🐛 logs
+        uses: actions/upload-artifact@v3
+        if: runner.debug && always()
+        with:
+          name: logs
+          path: '*.binlog'
+
+      # Only push CI package to sleet feed if building on ubuntu (fastest)
       - name: 🚀 sleet
         env:
           SLEET_CONNECTION: ${{ secrets.SLEET_CONNECTION }}
@@ -63,3 +85,17 @@ jobs:
         run: |
           dotnet tool install -g --version 4.0.18 sleet 
           sleet push bin --config none -f --verbose -p "SLEET_FEED_CONTAINER=nuget" -p "SLEET_FEED_CONNECTIONSTRING=${{ secrets.SLEET_CONNECTION }}" -p "SLEET_FEED_TYPE=azure" || echo "No packages found"
+
+  dotnet-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🤘 checkout
+        uses: actions/checkout@v2
+        with: 
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: ✓ ensure format
+        run: |
+          dotnet format whitespace --verify-no-changes -v:diag --exclude ~/.nuget
+          dotnet format style --verify-no-changes -v:diag --exclude ~/.nuget
