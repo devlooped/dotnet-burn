@@ -4,7 +4,7 @@
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
     <PackageVersion Include="Mono.Options" Version="6.12.0.148" />
     <PackageVersion Include="NuGetizer" Version="1.1.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
     <PackageVersion Include="NuGet.ProjectModel" Version="6.6.0" />
     <PackageVersion Include="Spectre.Console" Version="0.47.0" />
     <PackageVersion Include="Spectre.Console.Analyzer" Version="0.47.0" />
