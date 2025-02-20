@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>dotnet-burn</PackageId>
     <Description>Burn subtitles in SRT format into a video, with optional styling</Description>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
@@ -14,7 +14,6 @@
     <PackageReference Include="libse" />
     <PackageReference Include="Mono.Options" />
     <PackageReference Include="NuGetizer" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="NuGet.ProjectModel" />
     <PackageReference Include="Spectre.Console" />
