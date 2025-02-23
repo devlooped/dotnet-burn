@@ -5,15 +5,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>dotnet-burn</PackageId>
     <Description>Burn subtitles in SRT format into a video, with optional styling</Description>
-    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>burn</ToolCommandName>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="libse" />
-    <PackageReference Include="Mono.Options" />
     <PackageReference Include="NuGetizer" PrivateAssets="all" />
+    <PackageReference Include="libse" ExcludeAssets="contentFiles" />
+    <PackageReference Include="Mono.Options" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" />
     <PackageReference Include="NuGet.ProjectModel" />
     <PackageReference Include="Spectre.Console" />
@@ -27,11 +27,5 @@
   <ItemGroup>
     <None Update="@(None)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-
-  <Target Name="TrimRuntimes" AfterTargets="InferToolContents">
-    <ItemGroup>
-      <None Remove="@(None)" Condition="$([MSBuild]::ValueOrDefault('%(None.PackagePath)', '').Contains('/runtimes/'))" />
-    </ItemGroup>
-  </Target>
 
 </Project>
