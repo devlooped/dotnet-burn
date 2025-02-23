@@ -1,6 +1,6 @@
 # Changelog
 
-## [v1.0.0-beta](https://github.com/devlooped/dotnet-burn/tree/v1.0.0-beta) (2025-02-20)
+## [v1.0.0-beta](https://github.com/devlooped/dotnet-burn/tree/v1.0.0-beta) (2025-02-23)
 
 [Full Changelog](https://github.com/devlooped/dotnet-burn/compare/v1.0.0-alpha...v1.0.0-beta)
 
