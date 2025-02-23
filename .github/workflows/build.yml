@@ -65,12 +65,18 @@ jobs:
           fetch-depth: 0
 
       - name: ⚙ dotnet
+        if: matrix.os != 'windows-latest' 
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
             6.x
             8.x
             9.x
+
+      - name: ⏬ download
+        run: |
+          gh release download --output obj/win-x86_64.zip --clobber -p *CLI*-win-x86_64.zip --repo HandBrake/HandBrake
+          unzip obj/win-x86_64.zip -d src/handbrake.win/runtime
 
       - name: 🙏 build
         run: dotnet build -m:1 -bl:build.binlog

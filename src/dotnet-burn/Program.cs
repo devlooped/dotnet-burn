@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using Mono.Options;
 using Nikse.SubtitleEdit.Core.Common;
@@ -10,12 +11,12 @@ if (args.Any(x => x == "--debug"))
 
 if (HandBrake.Path == null)
 {
-    AnsiConsole.MarkupLineInterpolated($"[red]x[/] Current runtime {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier} is not supported.");
+    AnsiConsole.MarkupLineInterpolated($"[red]x[/] Current runtime {RuntimeInformation.RuntimeIdentifier} is not supported.");
     return -1;
 }
 
 #if DEBUG
-AnsiConsole.MarkupLineInterpolated($"[green]✓[/] Located compatible HandBrake at {HandBrake.Path}");
+AnsiConsole.MarkupLineInterpolated($"[green]✓[/] Located [lime][link={HandBrake.Path}]compatible HandBrake[/][/]");
 #endif
 
 var help = false;

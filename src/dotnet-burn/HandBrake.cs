@@ -13,11 +13,21 @@ public static class HandBrake
 
     static HandBrake()
     {
-        // Locate proper runtime binaries
-        var runtimeDir = default(string);
         var executable = ExecutableName;
         if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             executable += ".exe";
+
+        // if we have no runtime graph (deps.json), we can't really do anything.
+        if (DependencyContext.Default == null)
+        {
+            // Fallback to local runtime if found
+            var candidate = System.IO.Path.Combine(AppContext.BaseDirectory,
+                "runtimes", "win-x64", "native", "HandBrakeCLI.exe");
+            if (File.Exists(candidate))
+                Path = candidate;
+
+            return;
+        }
 
         foreach (var runtime in DependencyContext.Default.RuntimeGraph)
         {
@@ -25,15 +35,12 @@ public static class HandBrake
             var candidate = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", runtime.Runtime, "native");
             if (Directory.Exists(candidate))
             {
-                runtimeDir = candidate;
-                break;
+                if (File.Exists(System.IO.Path.Combine(candidate, executable)))
+                {
+                    Path = System.IO.Path.Combine(candidate, executable);
+                    return;
+                }
             }
-        }
-
-        if (runtimeDir != null)
-        {
-            Path = System.IO.Path.Combine(runtimeDir, executable);
-            return;
         }
 
         // In the installed tool scenario, we need to go up to the tool project restore root 
@@ -54,8 +61,10 @@ public static class HandBrake
                               from lib in target.Libraries
                               from native in lib.RuntimeTargets
                               where native.Runtime == runtime.Runtime &&
-                                    System.IO.Path.GetFileName(native.Path) == executable
-                              let file = new FileInfo(System.IO.Path.Combine(rootDir, lib.Name, lib.Version.ToString(), native.Path))
+                                    System.IO.Path.GetFileName(native.Path) == executable &&
+                                    !string.IsNullOrEmpty(lib.Name) &&
+                                    lib.Version != null
+                              let file = new FileInfo(System.IO.Path.Combine(rootDir, lib.Name!, lib.Version!.ToString(), native.Path))
                               where file.Exists
                               select file.FullName;
 
