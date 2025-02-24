@@ -123,13 +123,12 @@ try
     hbArgs.Insert(4, "--srt-file");
     hbArgs.Insert(5, subtitles);
     hbArgs.Insert(6, "--srt-burn");
+    hbArgs.Insert(7, "--srt-codeset");
+    hbArgs.Insert(8, "utf-8");
 
-    var psi = new ProcessStartInfo(HandBrake.Path, string.Join(" ", hbArgs))
-    {
-        //RedirectStandardError = true,
-        //RedirectStandardOutput = true,
-        //UseShellExecute = false,
-    };
+    var psi = new ProcessStartInfo(HandBrake.Path);
+    foreach (var arg in hbArgs)
+        psi.ArgumentList.Add(arg);
 
     AnsiConsole.MarkupLineInterpolated($"[grey] => {psi.FileName} {psi.Arguments} [/]");
     Process.Start(psi)?.WaitForExit();
@@ -140,7 +139,7 @@ catch (OptionException e)
 {
     AnsiConsole.Write("burn: ");
     AnsiConsole.WriteLine(e.Message);
-    AnsiConsole.WriteLine("Try `greet --help' for more information.");
+    AnsiConsole.WriteLine("Try `burn --help' for more information.");
     return -1;
 }
 
